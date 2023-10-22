@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEBAK SOAL | MATCHBOX</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+</head>
+<body>
+  <!-- select box -->
+  <div class="select-box">
+    <header style="color:red">Tebak Soal</header>
+    <div id="quiz-container"> <p id="question"></p> <ul id="options"> <li><button class="answer-button"></button></li> <li><button class="answer-button"></button></li> <li><button class="answer-button"></button></li> <li><button class="answer-button"></button></li> </ul> <p id="timer">Waktu: <span id="time-remaining">3</span> detik</p> <p id="score">Skor: <span id="current-score">0</span></p> <button id="start-button">Mulai</button> </div>
+      <div class="credit">Made With <a href="https://matchboxid.my.id" target="_blank">MatchGame</a></div>
+    </div>
+  </div>  
+  <script>
+// Daftar pertanyaan dan jawaban
+const questions = [
+    {
+        question: "Apa ibukota Prancis?",
+        options: ["Paris", "London", "Berlin", "Madrid"],
+        answer: "Paris"
+    },
+    {
+        question: "Siapa penemu gravitasi?",
+        options: ["Isaac Newton", "Albert Einstein", "Galileo Galilei", "Stephen Hawking"],
+        answer: "Isaac Newton"
+    },
+    {
+        question: "Berapa banyak planet di tata surya kita?",
+        options: ["7", "8", "9", "10"],
+        answer: "8"
+    },
+    {
+        question: "Berapa banyak warna pelangi?",
+        options: ["4", "5", "6", "7"],
+        answer: "7"
+    },
+    {
+        question: "Yang bukan bahasa pemrograman?",
+        options: ["HTML", "JAVASCRIPT", "PYTHON", "C++"],
+        answer: "HTML"
+    },
+    {
+        question: "5x6+8:2?",
+        options: ["25", "34", "72", "32"],
+        answer: "34"
+    },
+    {
+        question: "kalau cookies-isi-cookies jadi oreo gimana jadi nya kalau isi-cookies-isi-cookies-isi?",
+        options: ["reoreore", "oreoreore", "reoreoo", "rereore"],
+        answer: "reoreore"
+    },
+    {
+        question: "Slogan oreo?",
+        options: ["dijilat, diputar, dicelupin", "dicelupin, diputar, dijilat", "dijilat, dicelupin, diputar", "diputar, dijilat, dicelupin"],
+        answer: "diputar, dijilat, dicelupin"
+    },
+    {
+    question: "Siapa pencipta teori relativitas?",
+    options: ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Galileo Galilei"],
+    answer: "Albert Einstein"
+},
+{
+    question: "Apa lambang kimia untuk elemen besi?",
+    options: ["Au", "Ag", "Fe", "Cu"],
+    answer: "Fe"
+},
+{
+    question: "Negara manakah yang memiliki populasi terbanyak di dunia?",
+    options: ["India", "China", "Amerika Serikat", "Indonesia"],
+    answer: "China"
+},
+{
+    question: "Apa nama samudera terbesar di dunia?",
+    options: ["Samudera Atlantik", "Samudera Hindia", "Samudera Pasifik", "Samudera Arktik"],
+    answer: "Samudera Pasifik"
+},
+{
+    question: "Siapakah penulis novel '1984'?",
+    options: ["George Orwell", "Aldous Huxley", "Ray Bradbury", "Isaac Asimov"],
+    answer: "George Orwell"
+},
+{
+    question: "Negara manakah yang terkenal dengan Taj Mahal?",
+    options: ["India", "Mesir", "China", "Jepang"],
+    answer: "India"
+},
+{
+    question: "Apa ibukota Jepang?",
+    options: ["Kyoto", "Osaka", "Tokyo", "Hiroshima"],
+    answer: "Tokyo"
+},
+{
+    question: "Siapa pelukis terkenal yang menciptakan 'Starry Night'?",
+    options: ["Leonardo da Vinci", "Vincent van Gogh", "Pablo Picasso", "Claude Monet"],
+    answer: "Vincent van Gogh"
+},
+{
+    question: "Apa singkatan dari 'DNA'?",
+    options: ["Deoxyribonucleic Acid", "Ribonucleic Acid", "Deoxynucleic Acid", "Ribonucleotide Acid"],
+    answer: "Deoxyribonucleic Acid"
+},
+{
+    question: "Siapakah penemu lampu pijar (lampu Edison)?",
+    options: ["Thomas Edison", "Benjamin Franklin", "Nikola Tesla", "Alexander Graham Bell"],
+    answer: "Thomas Edison"
+},
+{
+    question: "Apa nama sungai terpanjang di dunia?",
+    options: ["Sungai Nil", "Sungai Amazon", "Sungai Yangtze", "Sungai Mississippi"],
+    answer: "Sungai Nil"
+},
+{
+    question: "Apa nama mata uang resmi Britania Raya?",
+    options: ["Euro", "Dolar Amerika", "Pound Sterling", "Frank Swiss"],
+    answer: "Pound Sterling"
+},
+{
+    question: "Siapakah penulis novel terkenal 'To Kill a Mockingbird'?",
+    options: ["J.K. Rowling", "George Orwell", "Harper Lee", "Jane Austen"],
+    answer: "Harper Lee"
+},
+{
+    question: "Apa nama benua yang terletak di sebelah utara Amerika Selatan?",
+    options: ["Afrika", "Asia", "Australia", "Eropa"],
+    answer: "Eropa"
+},
+{
+    question: "Berapa banyak negara yang terdapat di Uni Eropa (per 2021)?",
+    options: ["12", "20", "27", "36"],
+    answer: "27"
+},
+{
+    question: "Apa ibukota Australia?",
+    options: ["Sydney", "Melbourne", "Canberra", "Brisbane"],
+    answer: "Canberra"
+},
+{
+    question: "Siapakah penulis novel 'The Catcher in the Rye'?",
+    options: ["Ernest Hemingway", "F. Scott Fitzgerald", "J.D. Salinger", "John Steinbeck"],
+    answer: "J.D. Salinger"
+},
+{
+    question: "Apa singkatan dari 'FBI'?",
+    options: ["Federal Bureau of Investigation", "Foreign Business Intelligence", "Federation of Business Institutes", "Federal Bureau of Intelligence"],
+    answer: "Federal Bureau of Investigation"
+},
+{
+    question: "Negara manakah yang terkenal dengan Patung Liberty?",
+    options: ["Amerika Serikat", "Perancis", "Italia", "Inggris"],
+    answer: "Amerika Serikat"
+},
+{
+    question: "Apa nama benua yang terletak di selatan Afrika?",
+    options: ["Antarktika", "Asia", "Amerika Selatan", "Australia"],
+    answer: "Antarktika"
+},
+{
+    question: "Siapakah presiden pertama Amerika Serikat?",
+    options: ["Thomas Jefferson", "George Washington", "John Adams", "James Madison"],
+    answer: "George Washington"
+},
+{
+    question: "Apa nama sungai terpanjang di Amerika Serikat?",
+    options: ["Sungai Mississippi", "Sungai Missouri", "Sungai Ohio", "Sungai Colorado"],
+    answer: "Sungai Mississippi"
+},
+{
+    question: "Apa nama benua yang terletak di utara Australia?",
+    options: ["Eropa", "Asia", "Afrika", "Amerika Selatan"],
+    answer: "Asia"
+},
+{
+    question: "Siapakah penulis novel 'Pride and Prejudice'?",
+    options: ["George Orwell", "Jane Austen", "Charlotte Brontë", "Emily Dickinson"],
+    answer: "Jane Austen"
+},
+{
+    question: "Negara manakah yang terletak di benua Amerika Selatan?",
+    options: ["Perancis", "Spanyol", "Portugal", "Brazil"],
+    answer: "Brazil"
+},
+{
+    question: "Apa nama lambang kimia untuk elemen hidrogen?",
+    options: ["Hg", "He", "H", "Ho"],
+    answer: "H"
+},
+{
+    question: "Siapakah penemu telepon?",
+    options: ["Thomas Edison", "Alexander Graham Bell", "Nikola Tesla", "Samuel Morse"],
+    answer: "Alexander Graham Bell"
+},
+{
+    question: "Apa nama lambang kimia untuk elemen karbon?",
+    options: ["Ca", "C", "Co", "Cr"],
+    answer: "C"
+}
+
+    // Tambahkan pertanyaan dan jawaban lainnya di sini
+];
+
+// Inisialisasi elemen HTML
+const questionElement = document.getElementById("question");
+const optionsElement = document.getElementById("options");
+const timeRemainingElement = document.getElementById("time-remaining");
+const startButton = document.getElementById("start-button");
+
+let currentQuestionIndex = 0;
+let timeRemaining = 5;
+let gameInterval;
+
+// Fungsi untuk memulai game
+function startGame() {
+    currentQuestionIndex = 0;
+    timeRemaining = 5;
+    timeRemainingElement.textContent = timeRemaining;
+    optionsElement.innerHTML = "";
+    startButton.disabled = true;
+    loadQuestion(currentQuestionIndex);
+
+    gameInterval = setInterval(function () {
+        if (timeRemaining <= 0) {
+            clearInterval(gameInterval);
+            endGame();
+        } else {
+            timeRemaining--;
+            timeRemainingElement.textContent = timeRemaining;
+        }
+    }, 1000);
+}
+
+// Fungsi untuk memuat pertanyaan
+function loadQuestion(index) {
+    if (index < questions.length) {
+        const question = questions[index];
+        questionElement.textContent = question.question;
+
+        for (let i = 0; i < question.options.length; i++) {
+            const optionButton = document.createElement("button");
+            optionButton.className = "answer-button";
+            optionButton.textContent = question.options[i];
+            optionButton.addEventListener("click", function () {
+                checkAnswer(optionButton, question);
+            });
+            const optionListItem = document.createElement("li");
+            optionListItem.appendChild(optionButton);
+            optionsElement.appendChild(optionListItem);
+        }
+    } else {
+        endGame();
+    }
+}
+
+// Fungsi untuk memeriksa jawaban
+function checkAnswer(option, question) {
+    if (option.textContent === question.answer) {
+        questionElement.textContent = "Jawaban Anda Benar!";
+    } else {
+        questionElement.textContent = "Jawaban Anda Salah. Jawaban yang benar adalah: " + question.answer;
+    }
+    clearInterval(gameInterval);
+    optionsElement.innerHTML = "";
+    startButton.disabled = false;
+}
+
+// Fungsi untuk mengakhiri game
+function endGame() {
+    questionElement.textContent = "Game Selesai!";
+    optionsElement.innerHTML = "";
+    startButton.disabled = false;
+}
+
+// Tangkap klik tombol Mulai
+startButton.addEventListener("click", function () {
+    startGame();
+});
+
+// Memulai game saat halaman dimuat
+startGame();
+// ... (kode sebelumnya) ...
+
+// Fungsi untuk mengacak urutan pertanyaan
+function shuffleQuestions() {
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]]; // Menukar pertanyaan
+    }
+}
+
+// Fungsi untuk memulai game
+function startGame() {
+    currentQuestionIndex = 0;
+    timeRemaining = 10;
+    timeRemainingElement.textContent = timeRemaining;
+    optionsElement.innerHTML = "";
+    startButton.disabled = true;
+
+    // Acak urutan pertanyaan sebelum dimuat
+    shuffleQuestions();
+    loadQuestion(currentQuestionIndex);
+
+    gameInterval = setInterval(function () {
+        if (timeRemaining <= 0) {
+            clearInterval(gameInterval);
+            endGame();
+        } else {
+            timeRemaining--;
+            timeRemainingElement.textContent = timeRemaining;
+        }
+    }, 1000);
+}
+
+// ... (kode selanjutnya) ...
+
+  </script>
+  
+</body>
+</html>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+::selection{
+  color: #fff;
+  background:red;
+}
+body{
+  background:red;
+}
+.select-box, .play-board, .result-box{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+.select-box{
+  background: #fff;
+  padding: 20px 25px 25px;
+  border-radius: 5px;
+  max-width: 400px;
+  width: 100%;
+}
+.select-box.hide{
+  opacity: 0;
+  pointer-events: none;
+}
+.select-box header{
+  font-size: 30px;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 1px solid lightgrey;
+}
+.select-box .title{
+  font-size: 22px;
+  font-weight: 500;
+  margin: 20px 0;
+}
+.select-box .options{
+  display: flex;
+  width: 100%;
+}
+.options button{
+  width: 100%;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 0;
+  border: none;
+  background: red;
+  border-radius: 5px;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.options button:hover,
+.btn button:hover{
+  transform: scale(0.96);
+}
+.options button.playerX{
+  margin-right: 5px;
+}
+.options button.playerO{
+  margin-left: 5px;
+}
+.select-box .credit{
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  color: grey
+}
+.select-box .credit a{
+  color: red;
+  text-decoration: none;
+}
+.select-box .credit a:hover{
+  text-decoration: underline;
+}
+
+.play-board{
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.9);
+}
+.play-board.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+.play-board .details{
+  padding: 7px;
+  border-radius: 5px;
+  background: #fff;
+}
+.play-board .players{
+  width: 100%;
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+}
+.players span{
+  position: relative;
+  z-index: 2;
+  color: red;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 0;
+  width: 100%;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  transition: all 0.3 ease;
+}
+.players.active span:first-child{
+  color: #fff;
+}
+.players.active span:last-child{
+  color: red;
+}
+.players span:first-child{
+  color: #fff;
+}
+.players .slider{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: red;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+.players.active .slider{
+  left: 50%;
+}
+.players.active span:first-child{
+  color: red;
+}
+.players.active span:nth-child(2){
+  color: #fff;
+}
+.players.active .slider{
+  left: 50%;
+}
+.play-area{
+  margin-top: 20px;
+}
+.play-area section{
+  display: flex;
+  margin-bottom: 1px;
+}
+.play-area section span{
+  display: block;
+  height: 90px;
+  width: 90px;
+  margin: 2px;
+  color: red;
+  font-size: 40px;
+  line-height: 80px;
+  text-align: center;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.result-box{
+  padding: 25px 20px;
+  border-radius: 5px;
+  max-width: 400px;
+  width: 100%;
+  opacity: 0;
+  text-align: center;
+  background: #fff;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.9);
+}
+.result-box.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+.result-box .won-text{
+  font-size: 30px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+}
+.result-box .won-text p{
+  font-weight: 600;
+  margin: 0 5px;
+}
+.result-box .btn{
+  width: 100%;
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+}
+.btn button{
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 20px;
+  border: none;
+  background: red;
+  border-radius: 5px;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #333;
+}
+
+#quiz-container {
+    margin-top: 20px;
+}
+
+p, ul {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px;
+    cursor: pointer;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+</style>
